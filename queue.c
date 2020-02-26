@@ -91,9 +91,21 @@ bool q_insert_tail(queue_t *q, char *s)
  */
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
-    /* TODO: You need to fix up this code. */
-    /* TODO: Remove the above comment when you are about to implement. */
+    if (!q || q->size == 0)
+        return false;
+    if (sp) {
+        sp = (char *) malloc(sizeof(bufsize));
+
+        strncpy(sp, q->head, bufsize);
+    }
+    free(q->head->value);
+    queue_t *tmp;
+    tmp = q;
+    free(tmp);
     q->head = q->head->next;
+    q->size -= 1;
+    if (q->size == 0)
+        q->tail = NULL;
     return true;
 }
 
@@ -103,9 +115,6 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
  */
 int q_size(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* Remember: It should operate in O(1) time */
-    /* TODO: Remove the above comment when you are about to implement. */
     return q->size;
 }
 
