@@ -89,20 +89,20 @@ bool q_insert_tail(queue_t *q, char *s)
  * (up to a maximum of bufsize-1 characters, plus a null terminator.)
  * The space used by the list element and the string should be freed.
  */
+
+
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
-    if (!q || q->size == 0)
+    if (!q || q->size == 0 || !q->head)
         return false;
     if (sp) {
-        sp = (char *) malloc(sizeof(bufsize));
-
-        strncpy(sp, q->head, bufsize);
+        strncpy(sp, q->head->value, bufsize);
     }
-    free(q->head->value);
-    queue_t *tmp;
-    tmp = q;
-    free(tmp);
+    list_ele_t *tmp;
+    tmp = q->head;
     q->head = q->head->next;
+    free(q->head->value);
+    free(tmp);
     q->size -= 1;
     if (q->size == 0)
         q->tail = NULL;
