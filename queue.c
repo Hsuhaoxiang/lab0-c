@@ -80,6 +80,7 @@ bool q_insert_tail(queue_t *q, char *s)
     newh->next = NULL;
     q->tail->next = newh;
     q->tail = newh;
+    q->size += 1;
     return true;
 }
 
@@ -117,6 +118,8 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
  */
 int q_size(queue_t *q)
 {
+    if (!q)
+        return NULL;
     return q->size;
 }
 
