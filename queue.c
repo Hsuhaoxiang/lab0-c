@@ -96,10 +96,12 @@ bool q_insert_tail(queue_t *q, char *s)
 
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
+
     if (!q || q->size == 0 || !q->head)
         return false;
     if (sp) {
-        strncpy(sp, q->head->value, bufsize);
+        strncpy(sp, q->head->value, bufsize - 1);
+        sp[bufsize] = '\0';
     }
     list_ele_t *tmp;
     tmp = q->head;
