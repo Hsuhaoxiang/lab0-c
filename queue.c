@@ -121,6 +121,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     if (q->size == 1) {
         free(q->head->value);
         free(q->head);
+        q->head = NULL;
         q->size -= 1;
         return true;
     }
