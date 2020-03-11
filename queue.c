@@ -4,6 +4,7 @@
 
 #include "harness.h"
 #include "queue.h"
+#include "strnatcmp.h"
 
 
 queue_t *q_new()
@@ -156,7 +157,8 @@ list_ele_t *merge(list_ele_t *left, list_ele_t *right)
     list_ele_t *start = NULL;
 
     for (list_ele_t *merge_ele = NULL; left || right;) {
-        if (right == NULL || (left && strcmp(left->value, right->value) < 0)) {
+        if (right == NULL ||
+            (left && strnatcmp(left->value, right->value) < 0)) {
             if (!merge_ele)
                 start = merge_ele = left;
             else {
@@ -200,6 +202,7 @@ list_ele_t *merge_sort(list_ele_t *head)
 
     return merge(left, right);
 }
+
 void q_sort(queue_t *q)
 {
     if (!q || !q->head) {
