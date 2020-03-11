@@ -5,10 +5,7 @@
 #include "harness.h"
 #include "queue.h"
 
-/*
- * Create empty queue.
- * Return NULL if could not allocate space.
- */
+
 queue_t *q_new()
 {
     queue_t *q = (queue_t *) malloc(sizeof(queue_t));
@@ -20,7 +17,7 @@ queue_t *q_new()
     return q;
 }
 
-/* Free all storage used by queue */
+
 void q_free(queue_t *q)
 {
     if (!q) {
@@ -38,13 +35,7 @@ void q_free(queue_t *q)
     free(q);
 }
 
-/*
- * Attempt to insert element at head of queue.
- * Return true if successful.
- * Return false if q is NULL or could not allocate space.
- * Argument s points to the string to be stored.
- * The function must explicitly allocate space and copy the string into it.
- */
+
 bool q_insert_head(queue_t *q, char *s)
 {
     int Strlen = strlen(s);
@@ -68,13 +59,7 @@ bool q_insert_head(queue_t *q, char *s)
     return true;
 }
 
-/*
- * Attempt to insert element at tail of queue.
- * Return true if successful.
- * Return false if q is NULL or could not allocate space.
- * Argument s points to the string to be stored.
- * The function must explicitly allocate space and copy the string into it.
- */
+
 bool q_insert_tail(queue_t *q, char *s)
 {
     int Strlen = strlen(s);
@@ -99,15 +84,6 @@ bool q_insert_tail(queue_t *q, char *s)
     q->tail = newh;
     return true;
 }
-
-/*
- * Attempt to remove element from head of queue.
- * Return true if successful.
- * Return false if queue is NULL or empty.
- * If sp is non-NULL and an element is removed, copy the removed string to *sp
- * (up to a maximum of bufsize-1 characters, plus a null terminator.)
- * The space used by the list element and the string should be freed.
- */
 
 
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
@@ -138,10 +114,6 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 }
 
 
-/*
- * Return number of elements in queue.
- * Return 0 if q is NULL or empty
- */
 int q_size(queue_t *q)
 {
     if (!q)
@@ -149,19 +121,12 @@ int q_size(queue_t *q)
     return q->size;
 }
 
-/*
- * Reverse elements in queue
- * No effect if q is NULL or empty
- * This function should not allocate or free any list elements
- * (e.g., by calling q_insert_head, q_insert_tail, or q_remove_head).
- * It should rearrange the existing ones.
- */
+
 void q_reverse(queue_t *q)
 {
     if (!q || q->size == 0) {
         return;
     }
-    /* Queue has only 1 element */
     if (q->size == 1) {
         return;
     }
@@ -178,26 +143,75 @@ void q_reverse(queue_t *q)
     q->head = q->tail;
     q->tail = cur;
 }
+list_ele_t *merge(list_ele_t *left, list_ele_t *right)
+{
+    if (!left) {
+        return right;
+    }
 
-/*
- * Sort elements of queue in ascending order
- * No effect if q is NULL or empty. In addition, if q has only one
- * element, do nothing.
- */
+    if (!right) {
+        return left;
+    }
 
+    list_ele_t *start = NULL;
+
+    for (list_ele_t *merge_ele = NULL; left || right;) {
+        if (right == NULL || (left && strcmp(left->value, right->value) < 0)) {
+            if (!merge_ele)
+                start = merge_ele = left;
+            else {
+                merge_ele->next = left;
+                merge_ele = merge_ele->next;
+            }
+            left = left->next;
+        } else {
+            if (!merge_ele)
+                start = merge_ele = right;
+            else {
+                merge_ele->next = right;
+                merge_ele = merge_ele->next;
+            }
+            right = right->next;
+        }
+    }
+    return start;
+}
+
+list_ele_t *merge_sort(list_ele_t *head)
+{
+    if (!head || !head->next) {
+        return head;
+    }
+
+    list_ele_t *fast = head->next;
+    list_ele_t *slow = head;
+
+    while (fast && fast->next) {
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+
+    list_ele_t *left = head;
+    list_ele_t *right = slow->next;
+    slow->next = NULL;
+
+    left = merge_sort(left);
+    right = merge_sort(right);
+
+    return merge(left, right);
+}
 void q_sort(queue_t *q)
 {
-    int N = q_size(q);
-    list_ele_t *cur, *iter;
-
-    cur = iter = q->head;
-    for (int i = 0; i < N - 1; i++) {
-        for (int j = i; j < N - 1; j++) {
-            if (iter->value > iter->next->value) {
-            }
-
-            iter = iter->next;
-        }
-        cur = cur->next;
+    if (!q || !q->head) {
+        return;
     }
+    if (q->head == q->tail) {
+        return;
+    }
+    q->head = merge_sort(q->head);
+    list_ele_t *iter;
+    iter = q->head;
+    while (iter && iter->next)
+        iter = iter->next;
+    q->tail = iter;
 }
