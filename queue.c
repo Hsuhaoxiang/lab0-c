@@ -179,29 +179,43 @@ list_ele_t *merge(list_ele_t *left, list_ele_t *right)
     return start;
 }
 
-list_ele_t *merge_sort(list_ele_t *head)
+// list_ele_t *merge_sort(list_ele_t *head)
+// {
+//     if (!head || !head->next) {
+//         return head;
+//     }
+
+//     list_ele_t *fast = head->next;
+//     list_ele_t *slow = head;
+
+//     while (fast && fast->next) {
+//         fast = fast->next->next;
+//         slow = slow->next;
+//     }
+
+//     list_ele_t *left = head;
+//     list_ele_t *right = slow->next;
+//     slow->next = NULL;
+
+//     left = merge_sort(left);
+//     right = merge_sort(right);
+
+//     return merge(left, right);
+// }
+static list_ele_t *merge_sort(list_ele_t *head)
 {
-    if (!head || !head->next) {
+    if (!head || !head->next)
         return head;
-    }
 
-    list_ele_t *fast = head->next;
-    list_ele_t *slow = head;
-
-    while (fast && fast->next) {
-        fast = fast->next->next;
+    list_ele_t *slow = head, *fast;
+    for (fast = head->next; fast && fast->next; fast = fast->next->next)
         slow = slow->next;
-    }
 
-    list_ele_t *left = head;
-    list_ele_t *right = slow->next;
+    list_ele_t *mid = slow->next;
     slow->next = NULL;
-
-    left = merge_sort(left);
-    right = merge_sort(right);
-
-    return merge(left, right);
+    return merge(merge_sort(head), merge_sort(mid));
 }
+
 
 void q_sort(queue_t *q)
 {
