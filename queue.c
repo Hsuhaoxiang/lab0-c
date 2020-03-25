@@ -144,39 +144,63 @@ void q_reverse(queue_t *q)
     q->head = q->tail;
     q->tail = cur;
 }
-list_ele_t *merge(list_ele_t *left, list_ele_t *right)
+// list_ele_t *merge(list_ele_t *left, list_ele_t *right)
+// {
+//     if (!left) {
+//         return right;
+//     }
+
+//     if (!right) {
+//         return left;
+//     }
+
+//     list_ele_t *start = NULL;
+
+//     for (list_ele_t *merge_ele = NULL; left || right;) {
+//         if (right == NULL ||
+//             (left && strnatcmp(left->value, right->value) < 0)) {
+//             if (!merge_ele)
+//                 start = merge_ele = left;
+//             else {
+//                 merge_ele->next = left;
+//                 merge_ele = merge_ele->next;
+//             }
+//             left = left->next;
+//         } else {
+//             if (!merge_ele)
+//                 start = merge_ele = right;
+//             else {
+//                 merge_ele->next = right;
+//                 merge_ele = merge_ele->next;
+//             }
+//             right = right->next;
+//         }
+//     }
+//     return start;
+// }
+
+static list_ele_t *merge(list_ele_t *left, list_ele_t *right)
 {
-    if (!left) {
-        return right;
-    }
+    list_ele_t *head = NULL;
 
-    if (!right) {
-        return left;
-    }
-
-    list_ele_t *start = NULL;
-
-    for (list_ele_t *merge_ele = NULL; left || right;) {
-        if (right == NULL ||
-            (left && strnatcmp(left->value, right->value) < 0)) {
-            if (!merge_ele)
-                start = merge_ele = left;
-            else {
-                merge_ele->next = left;
-                merge_ele = merge_ele->next;
-            }
+    for (list_ele_t **iter = &head; true; iter = &((*iter)->next)) {
+        if (!left) {
+            (*iter) = right;
+            break;
+        }
+        if (!right) {
+            (*iter) = left;
+            break;
+        }
+        if (strcmp(left->value, right->value) < 0) {
+            (*iter) = left;
             left = left->next;
         } else {
-            if (!merge_ele)
-                start = merge_ele = right;
-            else {
-                merge_ele->next = right;
-                merge_ele = merge_ele->next;
-            }
+            (*iter) = right;
             right = right->next;
         }
     }
-    return start;
+    return head;
 }
 
 // list_ele_t *merge_sort(list_ele_t *head)
